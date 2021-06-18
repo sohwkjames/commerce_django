@@ -1,0 +1,1 @@
+This is an e-commerce website implemented as a Django application.

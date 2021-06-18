@@ -1,0 +1,47 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<script src="https://cdn.jsdelivr.net/holder/2.9.0/holder.min.js">
+</script>
+
+{% if category_name %}
+    <h2>{{category_name}}</h2>
+{% else %}
+
+    <h2>Categories</h2>
+{% endif %}
+    <form action="{% url 'categories' %}", method='POST'>
+        {% csrf_token %}
+        {% for category in categories %}
+        <button type="submit" class="btn btn-outline-primary" name="selected_category" value="{{category}}"> {{category}}</button>
+        {% endfor %}
+    </form>
+        
+
+                  
+    <div class="row">
+        {% for listing in selected_category %}
+        <div class="col-sm-4">
+          <div class="card">
+            <img src="{{listing.image_url}}" class="img-thumbnail" >
+            <div class="card-body">
+              <h5 class="card-title">{{listing.title}}</h5>
+              <h6 class="card-title">Posted by: {{listing.user}}</h5>
+
+              <h6 class="card-title">${{listing.price}}</h6>
+              <h6 class="card-title">Category: {{listing.category}}</h6>
+
+              <p class="card-text">{{listing.description}}</p>
+              <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View listing</a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <li>No listings</li>
+
+        {% endfor %}
+
+      </div>
+      
+
+{% endblock %}

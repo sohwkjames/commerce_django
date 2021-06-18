@@ -1,0 +1,70 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<script src="https://cdn.jsdelivr.net/holder/2.9.0/holder.min.js">
+</script>
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <img src="{{listing.image_url}}" class="img-thumbnail" >
+            <div class="card-body">
+                {% if is_winning_user %}
+                <h5>Congratulations, you have won this auction!</h5>
+                {% endif %}
+                <h5 class="card-title">{{listing.title}}</h5>
+                <h6 class="card-title">{{listing.user}}</h5>          
+                <h6 class="card-title">${{listing.price}}</h6>
+                <p class="card-text">[{{listing.category}}] {{listing.description}}</p>
+                {% if user.is_authenticated %}
+                <form action="{% url 'add_watchlist' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {% if is_watchlisted %}
+                    <button type='submit' name="watchlist_submit" value="remove">Remove from watchlist</a></button>
+                    {% else %}
+                    <button type='submit' name="watchlist_submit" value="add">Add to watchlist</a></button>
+                    {% endif %}
+                </form>
+                <form action="{% url 'make_bid' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {{bid_form}}
+                </form>
+
+                {% if show_close_button %}
+                
+                <form action= "{% url 'close_listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <button type='submit' name="close_listing" value="close">Close this listing</a></button>
+                </form>
+                {% endif %}
+
+                <div style="color:red">{{ message }}</div>                   
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+
+        <form action="{% url 'add_comment' listing.id %}", method='POST'>
+            {% csrf_token %}
+            <textarea class="a" type="text" name="comment_text"></textarea>
+            <button type="submit" class="btn btn-outline-primary">Add a comment</button>
+        </form>
+    
+        <ul class="list-group">
+            <li class="list-group-item" style="font-weight:bold">
+                Comments 
+            </li>
+            {% for comment in comments %}
+            
+            <li class="list-group-item" >{{comment.comment_text}}  <p style="font-size: x-small;">Posted by {{comment.user}}</p>
+            </li>
+            {% endfor %}
+          </ul>
+              </div>
+</div>
+
+
+{% endblock %}
